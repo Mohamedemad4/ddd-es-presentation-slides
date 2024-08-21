@@ -2,7 +2,7 @@
 theme: uncover
 _class: lead
 paginate: true
-backgroundColor: #fff
+backgroundColor: #fffffd
 # backgroundImage: url('https://marp.app/assets/hero-background.svg')
 marp: true
 ---
@@ -11,7 +11,7 @@ marp: true
 
 # **DDD, Event sourcing and CQRS**
 
-A practical guide
+A Practical Guide
 
 ---
 
@@ -33,6 +33,49 @@ A practical guide
 # A little bit about us.
 
 ---
+
+
+### Transport for Cairo
+<!-- ![:65% 80%](./tfc_intro.png) -->
+
+![w:800 center](./tfc_intro.png)
+
+
+---
+# RouteLab
+<style scoped>
+section {
+    font-size: 30px;
+}
+</style>
+
+<!-- ![:65% 80%](./tfc_intro.png) -->
+- Transit Data Collection and analysis **at scale**
+
+- Models the complexity of informal transit
+
+- Used in 10+ african cities
+
+![bg right:65% 90%](./routelab_home.png)
+
+---
+<!-- ### From DB-centric design to Event Souring -->
+
+## From DB-centric design to Event Sourcing
+
+<!-- - No relational schema: No service data boundaries/ownership.  reduce service interdependancy for read operations. no contracts no circuts no n+1s. everyone is free to read from the event stream  Maybe this point should be discussed later because at the current time they won't be able to imagine it.-->
+
+<!-- as we mentioned. Nothing is new under the sun all domains were once paper based and based on facts written on sheets paper. This is closer to that which allows you to do things more naturally. Your tech team and your operational team will have the same language with minimal drift. -->
+
+- We used to keep most of the state on the server
+- Increasing need for asynchronicity (due to field work conditions)
+- Complex feature: Synchronized section counts in 30+ locations all over Cairo
+---
+
+## Overview of DDD with Functional Event Sourcing
+
+---
+
 
 # So What is DDD basically?
 
@@ -246,6 +289,7 @@ No relational schema means no need for service data boundaries/ownership. Reduce
 
 
 ---
+# Practical 
 
 ![bg right:95% 95%](./arch_diagram.svg)
 ---
