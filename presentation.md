@@ -1,5 +1,5 @@
 ---
-theme: uncover
+theme: gaia
 _class: lead
 paginate: true
 backgroundColor: #fffffd
@@ -13,12 +13,12 @@ marp: true
 
 A Practical Guide
 
----
+<!-- --- -->
 
-# End goal
+<!-- # End goal
 
 - Different way of thinking about backend.
-- How event sourcing can accommodate system evolution be it technical or domain evolution.
+- How event sourcing can accommodate system evolution be it technical or domain evolution. -->
 
 ## <!-- You will see us mention the word domain alot. We use it to express biz. proccesses and constraints. Your systems should be written as close to the biz. domain as possible. Even the abstractions should mirror operational and biz. abstractions your org uses. -->
 ---
@@ -40,8 +40,13 @@ A Practical Guide
 
 ![w:800 center](./tfc_intro.png)
 
+---
+
+### We put microbuses in google maps
+![](./tfc_intro_maps_gtfs.png)
 
 ---
+
 # RouteLab
 <style scoped>
 section {
@@ -69,10 +74,15 @@ section {
 
 - We used to keep most of the state on the server
 - Increasing need for asynchronicity (due to field work conditions)
-- Complex feature: Synchronized section counts in 30+ locations all over Cairo
 ---
+<style scoped>
+h1 {
+   margin-top:10%;
+}
+</style>
 
-## Overview of DDD with Functional Event Sourcing
+
+# Overview of DDD with Functional Event Sourcing
 
 ---
 
@@ -114,9 +124,7 @@ These 2 things are more similar than we give credit for.
 
 ---
 
-##### What is Event sourcing?
-
-![bg right:65% 80%](https://6850195.fs1.hubspotusercontent-na1.net/hubfs/6850195/Imported_Blog_Media/turning-the-database-inside-out.svg)
+![bg right:90% 80%](https://6850195.fs1.hubspotusercontent-na1.net/hubfs/6850195/Imported_Blog_Media/turning-the-database-inside-out.svg)
 
 ---
 
@@ -153,7 +161,6 @@ blockquote {
 
 - Commands are intentions.
 - Events are facts.
-- Decider looks at the command and the given system state and decides what the next "fact(s)" are going to be.
 
 ![alt text](image-1.png)
 
@@ -167,6 +174,7 @@ blockquote {
 ---
 # (The write side): Evolution function and The decider
 
+- Decider looks at the command and the given system state and decides what the next "fact(s)" are going to be.
 - For each "entity/service" you are familiar with "service->repository->database"
 - Here we define an "aggregate" Each aggregate has it's evolution function that determines it's state from previous events.
 - Right now you can think of an aggregate as an entity.
@@ -194,17 +202,6 @@ const resultEither = await eventStore.appendToStream(
 ```
 
 ## <!--This is your service". -->
----
-## Reactors,policy and system state, read models.
-
-- How one would run things that span different "entities"? Say a "order received,payment received,order confirmed?"
-
----
-
-![](https://miro.medium.com/v2/resize:fit:1400/1*zFkyTOpPU-DKOrtOrNHHuw.png)
-
-## <!-- Somewhere. And not exactly sure where that where is. the distinction should be drawn between aggregate and entity -->
-
 ---
 
 #### decide ex:1
@@ -253,29 +250,46 @@ const resultEither = await eventStore.appendToStream(
             )),
 ```
 <!--In memory data structure FTW-->
----
 
+---
+## Summary Diagram
+
+![width:950](https://miro.medium.com/v2/resize:fit:1400/1*zFkyTOpPU-DKOrtOrNHHuw.png)
+
+> [Source: Alberto Brandolini](https://medium.com/@ziobrando/collaborative-process-modelling-with-eventstorming-17ed363650c0)
+
+## <!-- Somewhere. And not exactly sure where that where is. the distinction should be drawn between aggregate and entity -->
+
+---
+<!-- ## Reactors,policy and system state, read models. -->
+
+<!-- - How one would run things that span different "entities"? Say a "order received,payment received,order confirmed?" -->
+
+<!-- --- -->
 ## Projections
 
-![](https://6850195.fs1.hubspotusercontent-na1.net/hubfs/6850195/ES-Pillar-8.svg)
+![width:900](https://6850195.fs1.hubspotusercontent-na1.net/hubfs/6850195/ES-Pillar-8.svg)
+> [Source: Event Store DB Blog](https://www.eventstore.com/event-sourcing)
+
 
 ---
 
 ## Projections 2
-They can be in-memory even.
+They can be in-memory.
+Use the correct data structure/database for *your* problem.
+
+---
+
+# No 'Database' per service. Single source of truth
+
+No relational schema means no need for service data boundaries/ownership. Reduce service interdependence for read operations. 
+
 
 ---
 
 # Eventual consistency
 - The read model technically lags behind the write model
 - Solution: The API only accepts commands when the client sends the latest event-id within the aggregate’s stream
----
-
-# No 'Database' per service. Everyone owns the data
-
-No relational schema means no need for service data boundaries/ownership. Reduce service interdependence for read operations. 
-
-<!--This-->
 ---
 
 ### Other concerns for a production system
@@ -287,9 +301,55 @@ No relational schema means no need for service data boundaries/ownership. Reduce
 
 <!-- no contracts no circuts no n+1s. everyone is free to read from the event stream  Maybe this point should be discussed later because at the current time they won't be able to imagine it.-->
 
+---
+## Lessons learned from our implementation
+- Zod
+- Typescript
+- TONS of Codegen
+- Graphql
+- Postgraphile.
+- ts-rest
+- ts-pattern
 
 ---
-# Practical 
 
-![bg right:95% 95%](./arch_diagram.svg)
+## Small Example Project
+
+- A very simple aggregate
+- Demonstrates the usage of said technologies together
+- GitHub repo link: https://github.com/hzmmohamed/ddd-es-example
 ---
+## Our System's Architecture 
+
+![width:1100](./arch_diagram.svg)
+
+---
+
+## Our System's Architecture 
+
+- Read and write API separation
+- One GraphQL API gateway
+- *TypeScript types + code-gen*
+A fully type-safe system from the domain model to the GraphQL API client on the front-end
+
+---
+
+## Further Resources
+Invaluable resources for learning event sourcing:
+
+- [Oskar Dudycz's Blog](https://event-driven.io/en/)
+- [The Functional Decider Pattern](https://thinkbeforecoding.com/post/2021/12/17/functional-event-sourcing-decider)
+- [https://www.eventstore.com/event-sourcing](https://www.eventstore.com/event-sourcing)
+- [Greg Young's Book on Event Versioning](https://leanpub.com/esversioning/read)
+- Greg Young's talks, generally
+
+---
+
+# Thank you for listening.
+TfC is hiring!
+
+- h.fhami@transportforcairo.com
+- emad.moh.hamdy@gmail.com 
+
+You can find today's talk slides on GitHub: https://github.com/Mohamedemad4/ddd-es-presentation-slides
+
